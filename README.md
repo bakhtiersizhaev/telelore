@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TeleLore
 
-## Getting Started
+**TeleLore** is a free, open-source Telegram export to NotebookLM converter. It turns a Telegram Desktop `result.json` chat history into clean Markdown (`.md`) chunks that can be uploaded to [Google NotebookLM](https://notebooklm.google/) as sources.
 
-First, run the development server:
+Built for huge Telegram chats, pet-project writeups, research communities, work archives, and any chat history you want to query with NotebookLM.
+
+## Live app
+
+- Production: https://telelore.vercel.app
+- Repository: https://github.com/bakhtiersizhaev/telelore
+
+## What it does
+
+- Converts Telegram Desktop JSON exports into NotebookLM-ready Markdown files.
+- Splits large chats by word budget: 50k to 500k words per `.md` file.
+- Keeps useful message context: date/time, author, forwards, reactions, polls, and media metadata.
+- Runs in a browser Web Worker, so the UI stays responsive while processing big JSON files.
+- Creates one ZIP archive with all `.md` chunks plus a small README.
+- Does not upload your chat anywhere. Processing is local in the browser.
+
+## Why Markdown for NotebookLM
+
+NotebookLM supports many file types, including `pdf`, `txt`, `md`, `docx`, `csv`, `pptx`, `epub`, images, audio, and video. For Telegram chats, Markdown is the simplest source format: it stays readable, searchable, easy to split, and light enough for large text histories.
+
+## How to export from Telegram
+
+1. Open Telegram Desktop.
+2. Open the chat or channel.
+3. Choose **Export chat history**.
+4. Select **Machine-readable JSON**.
+5. Export and use the generated `result.json` in TeleLore.
+
+## Local development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Verification
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npm run typecheck
+npm run test
+npm run build
+```
 
-## Learn More
+To run the real large-export test locally, set a path to a Telegram Desktop `result.json`:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+$env:TELELORE_SAMPLE_JSON="C:\Users\bahti\Downloads\Telegram Desktop\ChatExport_2026-04-29 (1)\result.json"
+npm run test
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Tech stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Next.js App Router
+- React
+- TypeScript
+- Tailwind CSS
+- JSZip
+- Vitest
+- Vercel
 
-## Deploy on Vercel
+## SEO keywords
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Telegram export to NotebookLM, Telegram JSON converter, Telegram chat to Markdown, result.json to md, Google NotebookLM sources, Telegram history converter, NotebookLM Markdown chunks.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+MIT

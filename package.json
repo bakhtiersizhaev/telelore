@@ -1,17 +1,39 @@
 {
   "name": "telelore",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
+  "description": "Free local Telegram Desktop JSON to Google NotebookLM Markdown converter.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bakhtiersizhaev/telelore.git"
+  },
+  "keywords": [
+    "telegram",
+    "notebooklm",
+    "markdown",
+    "telegram-export",
+    "result-json",
+    "converter"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "check": "npm run lint && npm run typecheck && npm run test && npm run build"
   },
   "dependencies": {
+    "jszip": "^3.10.1",
+    "lucide-react": "^1.14.0",
     "next": "16.2.4",
     "react": "19.2.4",
     "react-dom": "19.2.4"
+  },
+  "overrides": {
+    "postcss": "8.5.10"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -21,6 +43,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.5"
   }
 }

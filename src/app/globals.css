@@ -1,26 +1,306 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ink: #050914;
+  --panel: #0d1422;
+  --panel-strong: #111b2d;
+  --paper: #f5f9ff;
+  --muted: #94a9c3;
+  --telegram: #2aabee;
+  --cyan: #49e1ff;
+  --amber: #ffd24a;
+  --success: #62f2a8;
+  --danger: #ff5c7a;
+  --danger-light: #ffb3c1;
+  --shadow: #01040a;
+  --background: var(--ink);
+  --foreground: var(--paper);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: "Geist", "Geist Fallback", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", "Geist Mono Fallback", "SFMono-Regular", Consolas, ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100%;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: "Geist", "Geist Fallback", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button,
+label,
+select,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: var(--telegram);
+  color: #00101c;
+}
+
+.pixel-grid {
+  background-image:
+    linear-gradient(rgba(42, 171, 238, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(42, 171, 238, 0.08) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: linear-gradient(to bottom, #000 0%, #000 68%, transparent 100%);
+}
+
+.scanline {
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.028) 0,
+    rgba(255, 255, 255, 0.028) 1px,
+    transparent 1px,
+    transparent 7px
+  );
+  opacity: 0.28;
+}
+
+.pixel-panel {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.025)),
+    var(--panel);
+  box-shadow:
+    8px 8px 0 0 var(--shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.pixel-panel::before {
+  position: absolute;
+  inset: -1px auto auto -1px;
+  width: 44px;
+  height: 4px;
+  background: var(--telegram);
+  content: "";
+}
+
+.pixel-link {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  background: rgba(255, 255, 255, 0.045);
+  padding: 8px 12px;
+  color: var(--paper);
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 3px 3px 0 0 var(--shadow);
+  transition:
+    transform 140ms ease,
+    border-color 140ms ease,
+    background 140ms ease;
+}
+
+.pixel-link:hover {
+  border-color: rgba(73, 225, 255, 0.7);
+  background: rgba(42, 171, 238, 0.13);
+  transform: translate(-1px, -1px);
+}
+
+.pixel-link:focus-visible,
+.primary-button:focus-visible,
+.download-button:focus-visible,
+.icon-button:focus-visible,
+.pixel-select:focus-visible,
+.dropzone:focus-within,
+.toggle-row:focus-within {
+  outline: 3px solid rgba(73, 225, 255, 0.55);
+  outline-offset: 3px;
+}
+
+.quest-step {
+  display: grid;
+  min-height: 68px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--muted);
+  font-family: "Geist Mono", "Geist Mono Fallback", Consolas, ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.quest-step span {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border: 1px solid rgba(73, 225, 255, 0.6);
+  color: var(--cyan);
+}
+
+.dropzone {
+  display: grid;
+  min-height: 300px;
+  cursor: pointer;
+  place-items: center;
+  gap: 18px;
+  border: 2px dashed rgba(73, 225, 255, 0.28);
+  background:
+    linear-gradient(90deg, rgba(42, 171, 238, 0.08) 1px, transparent 1px),
+    linear-gradient(rgba(42, 171, 238, 0.08) 1px, transparent 1px),
+    rgba(0, 0, 0, 0.23);
+  background-size: 18px 18px;
+  padding: 28px;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+.dropzone:hover,
+.dropzone-active {
+  border-color: var(--telegram);
+  background-color: rgba(42, 171, 238, 0.1);
+  transform: translate(-2px, -2px);
+}
+
+.field-label {
+  display: block;
+  margin-bottom: -12px;
+  color: var(--muted);
+  font-family: "Geist Mono", "Geist Mono Fallback", Consolas, ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.pixel-select {
+  min-height: 48px;
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 0;
+  background: rgba(0, 0, 0, 0.26);
+  color: var(--paper);
+  padding: 0 14px;
+  font-weight: 800;
+}
+
+.pixel-select option {
+  background: #101827;
+  color: var(--paper);
+}
+
+.toggle-row {
+  display: flex;
+  min-height: 42px;
+  cursor: pointer;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.035);
+  padding: 9px 10px;
+  color: var(--paper);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.toggle-row:hover {
+  border-color: rgba(73, 225, 255, 0.5);
+}
+
+.toggle-box {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(73, 225, 255, 0.6);
+  background: rgba(73, 225, 255, 0.08);
+  color: var(--cyan);
+}
+
+.primary-button,
+.download-button {
+  display: inline-flex;
+  min-height: 54px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid #8fe9ff;
+  background: var(--telegram);
+  color: #00101c;
+  padding: 0 22px;
+  font-size: 15px;
+  font-weight: 950;
+  text-decoration: none;
+  box-shadow: 6px 6px 0 0 var(--shadow);
+  transition:
+    transform 140ms ease,
+    box-shadow 140ms ease,
+    opacity 140ms ease;
+}
+
+.primary-button:hover,
+.download-button:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0 0 var(--shadow);
+}
+
+.primary-button:disabled {
+  cursor: not-allowed;
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.13);
+  color: rgba(245, 249, 255, 0.45);
+  box-shadow: 4px 4px 0 0 var(--shadow);
+}
+
+.download-button {
+  width: 100%;
+  background: var(--amber);
+  border-color: #ffe384;
+}
+
+.icon-button {
+  display: inline-grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  background: rgba(255, 255, 255, 0.045);
+  color: var(--paper);
+  box-shadow: 4px 4px 0 0 var(--shadow);
+}
+
+.icon-button:hover {
+  border-color: rgba(73, 225, 255, 0.65);
+  color: var(--cyan);
+}
+
+@media (max-width: 640px) {
+  .pixel-panel {
+    box-shadow: 5px 5px 0 0 var(--shadow);
+  }
+
+  .dropzone {
+    min-height: 240px;
+    padding: 22px;
+  }
 }

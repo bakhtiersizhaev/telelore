@@ -1,0 +1,98 @@
+{
+  "name": "Pixel AI Chat",
+  "type": "public_supergroup",
+  "id": 100500,
+  "messages": [
+    {
+      "id": 1,
+      "type": "message",
+      "date": "2026-04-01T10:15:00",
+      "date_unixtime": "1775027700",
+      "from": "Ada",
+      "from_id": "user1",
+      "text": "First long Telegram message for NotebookLM.",
+      "text_entities": [
+        {
+          "type": "plain",
+          "text": "First long Telegram message for NotebookLM."
+        }
+      ],
+      "reactions": [
+        {
+          "type": "emoji",
+          "count": 3,
+          "emoji": "👍"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "message",
+      "date": "2026-04-01T10:17:00",
+      "date_unixtime": "1775027820",
+      "from": "Ben",
+      "from_id": "user2",
+      "forwarded_from": "Source Channel",
+      "text": [
+        "A linked fragment: ",
+        {
+          "type": "link",
+          "text": "https://example.com"
+        }
+      ],
+      "text_entities": []
+    },
+    {
+      "id": 3,
+      "type": "message",
+      "date": "2026-04-01T10:21:00",
+      "date_unixtime": "1775028060",
+      "from": "Ada",
+      "from_id": "user1",
+      "poll": {
+        "question": "Best export format?",
+        "closed": false,
+        "total_voters": 42,
+        "answers": [
+          {
+            "text": "Markdown",
+            "voters": 41
+          },
+          {
+            "text": "Plain text",
+            "voters": 1
+          }
+        ]
+      },
+      "text": "",
+      "text_entities": []
+    },
+    {
+      "id": 4,
+      "type": "message",
+      "date": "2026-04-01T10:25:00",
+      "date_unixtime": "1775028300",
+      "from": "Bot",
+      "from_id": "bot1",
+      "media_type": "voice_message",
+      "mime_type": "audio/ogg",
+      "duration_seconds": 9,
+      "file_name": "voice.ogg",
+      "file_size": 4096,
+      "text": "Short voice summary.",
+      "text_entities": []
+    },
+    {
+      "id": 5,
+      "type": "service",
+      "date": "2026-04-01T10:30:00",
+      "date_unixtime": "1775028600",
+      "actor": "Pixel AI Chat",
+      "actor_id": "channel100500",
+      "action": "invite_members",
+      "members": ["Ada", "Ben"],
+      "text": "",
+      "text_entities": []
+    }
+  ]
+}

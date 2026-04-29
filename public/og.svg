@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">TeleLore social image</title>
+  <desc id="desc">Pixel game style Telegram to NotebookLM converter interface.</desc>
+  <rect width="1200" height="630" fill="#050914"/>
+  <path d="M0 96h1200M0 192h1200M0 288h1200M0 384h1200M0 480h1200M0 576h1200M96 0v630M192 0v630M288 0v630M384 0v630M480 0v630M576 0v630M672 0v630M768 0v630M864 0v630M960 0v630M1056 0v630" stroke="#2AABEE" stroke-opacity=".12"/>
+  <rect x="84" y="76" width="1032" height="478" fill="#0D1422" stroke="#2AABEE" stroke-width="4"/>
+  <rect x="116" y="108" width="970" height="414" fill="#0A1020" stroke="#23314B" stroke-width="4"/>
+  <rect x="148" y="140" width="348" height="62" fill="#111B2D" stroke="#2AABEE" stroke-width="4"/>
+  <rect x="148" y="232" width="580" height="220" fill="#111B2D" stroke="#23314B" stroke-width="4"/>
+  <rect x="178" y="262" width="520" height="28" fill="#2AABEE" opacity=".95"/>
+  <rect x="178" y="314" width="454" height="22" fill="#94A9C3" opacity=".75"/>
+  <rect x="178" y="356" width="486" height="22" fill="#94A9C3" opacity=".55"/>
+  <rect x="178" y="398" width="332" height="22" fill="#94A9C3" opacity=".42"/>
+  <rect x="760" y="140" width="278" height="312" fill="#111B2D" stroke="#2AABEE" stroke-width="4"/>
+  <rect x="790" y="170" width="72" height="72" fill="#0A1020" stroke="#49E1FF" stroke-width="4"/>
+  <rect x="880" y="170" width="72" height="72" fill="#0A1020" stroke="#49E1FF" stroke-width="4"/>
+  <rect x="970" y="170" width="38" height="72" fill="#0A1020" stroke="#49E1FF" stroke-width="4"/>
+  <path d="M816 206h20M826 196v20M906 206h20M916 196v20M990 206h12" stroke="#49E1FF" stroke-width="4" stroke-linecap="square"/>
+  <rect x="790" y="282" width="218" height="28" fill="#23314B"/>
+  <rect x="790" y="332" width="218" height="28" fill="#23314B"/>
+  <rect x="790" y="382" width="168" height="28" fill="#23314B"/>
+  <path d="M610 274h94v-42l102 82-102 82v-42h-94z" fill="#FFD24A"/>
+  <g transform="translate(244 126)">
+    <rect width="54" height="54" fill="#2AABEE"/>
+    <path d="M14 26 41 15c3-1 5 2 4 5L32 46c-1 3-5 3-6 0l-4-12-12-4c-3-1-3-5 4-7Z" fill="#F5F9FF"/>
+  </g>
+  <rect x="148" y="480" width="188" height="38" fill="#FFD24A"/>
+  <rect x="360" y="480" width="188" height="38" fill="#2AABEE"/>
+  <rect x="572" y="480" width="188" height="38" fill="#49E1FF"/>
+</svg>
