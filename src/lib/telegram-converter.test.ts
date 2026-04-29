@@ -33,6 +33,8 @@ describe("telegram converter", () => {
     });
 
     expect(result.stats.chatName).toBe("Pixel AI Chat");
+    expect(result.stats.sourceFormat).toBe("chat");
+    expect(result.stats.chatCount).toBe(1);
     expect(result.stats.totalMessages).toBe(5);
     expect(result.stats.includedMessages).toBe(4);
     expect(result.files).toHaveLength(1);
@@ -59,6 +61,68 @@ describe("telegram converter", () => {
     expect(content).not.toContain("Reactions:");
     expect(content).not.toContain("Media:");
     expect(content).toContain("Service: Pixel AI Chat - invite members - Ada, Ben");
+  });
+
+  it("converts full Telegram account exports with chats.list messages", () => {
+    const accountExport = {
+      personal_information: {
+        first_name: "Pixel",
+        last_name: "Owner",
+        username: "pixel_owner",
+      },
+      chats: {
+        list: [
+          {
+            name: "Work AI",
+            type: "private_group",
+            id: 1,
+            messages: [
+              {
+                id: 10,
+                type: "message",
+                date: "2026-04-02T09:00:00",
+                from: "Ada",
+                text: "Kickoff notes for the work automation.",
+                text_entities: [],
+              },
+            ],
+          },
+          {
+            name: "Night Lab",
+            type: "public_supergroup",
+            id: 2,
+            messages: [
+              {
+                id: 20,
+                type: "message",
+                date: "2026-04-03T02:10:00",
+                from: "Ben",
+                text: "A 2 AM experiment with Telegram exports.",
+                text_entities: [],
+              },
+            ],
+          },
+        ],
+      },
+    };
+
+    const result = convertTelegramExport(accountExport, {
+      ...DEFAULT_OPTIONS,
+      wordsPerFile: 50_000,
+    });
+
+    expect(result.stats.sourceFormat).toBe("account");
+    expect(result.stats.chatCount).toBe(2);
+    expect(result.stats.totalMessages).toBe(2);
+    expect(result.stats.chatName).toBe("Telegram account export - Pixel Owner (@pixel_owner)");
+    expect(result.files[0].content).toContain("### 02.04.2026 09:00 - Work AI - Ada");
+    expect(result.files[0].content).toContain("### 03.04.2026 02:10 - Night Lab - Ben");
+  });
+
+  it("explains unsupported JSON shapes", () => {
+    expect(() => convertTelegramExport({ chats: { list: [] } })).toThrow(
+      "экспорт одного чата с messages в корне или полный экспорт аккаунта",
+    );
   });
 
   it("splits very large chat text into word-budgeted chunks", () => {

@@ -56,6 +56,7 @@ export type TelegramMessage = {
   sticker_emoji?: string;
   via_bot?: string;
   inline_bot_buttons?: unknown[];
+  source_chat?: string;
   [key: string]: unknown;
 };
 
@@ -90,6 +91,17 @@ export type TelegramExport = {
   [key: string]: unknown;
 };
 
+export type TelegramAccountExport = {
+  personal_information?: Record<string, unknown>;
+  chats?:
+    | TelegramExport[]
+    | {
+        list?: TelegramExport[];
+        [key: string]: unknown;
+      };
+  [key: string]: unknown;
+};
+
 export type MarkdownFile = {
   name: string;
   content: string;
@@ -102,6 +114,8 @@ export type MarkdownFile = {
 export type ConversionStats = {
   chatName: string;
   chatType?: string;
+  sourceFormat: "chat" | "account";
+  chatCount: number;
   totalMessages: number;
   includedMessages: number;
   skippedMessages: number;
@@ -148,13 +162,12 @@ const MAX_WORDS_PER_FILE = 500_000;
 const MIN_WORDS_PER_FILE = 5_000;
 
 export function convertTelegramExport(
-  data: TelegramExport,
+  data: unknown,
   options: ConverterOptions = DEFAULT_OPTIONS,
 ): ConversionResult {
-  validateTelegramExport(data);
-
+  const normalizedExport = normalizeTelegramExportInput(data);
   const normalizedOptions = normalizeOptions(options);
-  const chatName = cleanInline(data.name ?? "") || "Telegram chat";
+  const chatName = cleanInline(normalizedExport.name ?? "") || "Telegram chat";
   const authors = new Set<string>();
   const chunks: ChunkDraft[] = [];
   let activeChunk = createChunkDraft();
@@ -163,7 +176,7 @@ export function convertTelegramExport(
   let firstDate: string | undefined;
   let lastDate: string | undefined;
 
-  for (const message of data.messages ?? []) {
+  for (const message of normalizedExport.messages ?? []) {
     const prepared = prepareMessage(message, normalizedOptions);
 
     if (!prepared) {
@@ -199,7 +212,7 @@ export function convertTelegramExport(
   const files = chunks.map((chunk, index) =>
     buildMarkdownFile({
       chatName,
-      chatType: data.type,
+      chatType: normalizedExport.type,
       chunk,
       chunkIndex: index,
       totalChunks: chunks.length,
@@ -211,10 +224,12 @@ export function convertTelegramExport(
     files,
     stats: {
       chatName,
-      chatType: typeof data.type === "string" ? data.type : undefined,
-      totalMessages: data.messages?.length ?? 0,
+      chatType: typeof normalizedExport.type === "string" ? normalizedExport.type : undefined,
+      sourceFormat: normalizedExport.sourceFormat,
+      chatCount: normalizedExport.chatCount,
+      totalMessages: normalizedExport.messages?.length ?? 0,
       includedMessages,
-      skippedMessages: (data.messages?.length ?? 0) - includedMessages,
+      skippedMessages: (normalizedExport.messages?.length ?? 0) - includedMessages,
       chunks: files.length,
       totalWords,
       authors: authors.size,
@@ -224,16 +239,122 @@ export function convertTelegramExport(
   };
 }
 
-export function validateTelegramExport(data: unknown): asserts data is TelegramExport {
+export function validateTelegramExport(data: unknown): asserts data is TelegramExport | TelegramAccountExport {
+  normalizeTelegramExportInput(data);
+}
+
+export function normalizeTelegramExportInput(
+  data: unknown,
+): TelegramExport & { sourceFormat: "chat" | "account"; chatCount: number } {
   if (!data || typeof data !== "object") {
     throw new Error("Файл не похож на Telegram JSON export.");
   }
 
   const maybeExport = data as TelegramExport;
 
-  if (!Array.isArray(maybeExport.messages)) {
-    throw new Error("В JSON не найден массив messages. Нужен result.json из Telegram Desktop.");
+  if (Array.isArray(maybeExport.messages)) {
+    return {
+      ...maybeExport,
+      sourceFormat: "chat",
+      chatCount: 1,
+    };
   }
+
+  const accountChats = getAccountChats(data as TelegramAccountExport);
+
+  if (accountChats.length > 0) {
+    return buildCombinedAccountExport(data as TelegramAccountExport, accountChats);
+  }
+
+  throw new Error(
+    "В JSON не найден массив messages. Поддерживаются два формата: экспорт одного чата с messages в корне или полный экспорт аккаунта с chats.list[].messages.",
+  );
+}
+
+function getAccountChats(data: TelegramAccountExport): TelegramExport[] {
+  const chatsContainer = data.chats;
+
+  if (Array.isArray(chatsContainer)) {
+    return chatsContainer.filter(hasTelegramMessages);
+  }
+
+  if (chatsContainer && typeof chatsContainer === "object" && Array.isArray(chatsContainer.list)) {
+    return chatsContainer.list.filter(hasTelegramMessages);
+  }
+
+  return [];
+}
+
+function buildCombinedAccountExport(
+  data: TelegramAccountExport,
+  chats: TelegramExport[],
+): TelegramExport & { sourceFormat: "account"; chatCount: number } {
+  const messages: TelegramMessage[] = [];
+
+  for (const chat of chats) {
+    const chatName = getChatDisplayName(chat);
+
+    for (const message of chat.messages ?? []) {
+      message.source_chat = chatName;
+      messages.push(message);
+    }
+  }
+
+  return {
+    name: getAccountExportName(data),
+    type: "account_export",
+    messages,
+    sourceFormat: "account",
+    chatCount: chats.length,
+  };
+}
+
+function hasTelegramMessages(value: unknown): value is TelegramExport {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  return Array.isArray((value as TelegramExport).messages);
+}
+
+function getChatDisplayName(chat: TelegramExport): string {
+  return (
+    cleanInline(chat.name ?? "") ||
+    cleanInline(stringFromUnknown(chat.title)) ||
+    cleanInline(stringFromUnknown(chat.id)) ||
+    "Unnamed chat"
+  );
+}
+
+function getAccountExportName(data: TelegramAccountExport): string {
+  const personal = data.personal_information;
+
+  if (!personal || typeof personal !== "object") {
+    return "Telegram account export";
+  }
+
+  const firstName = cleanInline(stringFromUnknown(personal.first_name));
+  const lastName = cleanInline(stringFromUnknown(personal.last_name));
+  const username = cleanInline(stringFromUnknown(personal.username));
+  const fullName = [firstName, lastName].filter(Boolean).join(" ");
+
+  if (fullName && username) {
+    return `Telegram account export - ${fullName} (@${username})`;
+  }
+
+  return fullName || (username ? `Telegram account export - @${username}` : "Telegram account export");
+}
+
+function stringFromUnknown(value: unknown): string {
+  if (typeof value === "string") {
+    return value;
+  }
+
+  if (typeof value === "number" || typeof value === "bigint") {
+    return String(value);
+  }
+
+  return "";
 }
 
 export function extractTelegramText(
@@ -291,6 +412,8 @@ export function makeReadmeText(result: ConversionResult): string {
     "# TeleLore export",
     "",
     `Chat: ${result.stats.chatName}`,
+    `Source format: ${result.stats.sourceFormat === "account" ? "Telegram account export" : "Telegram chat export"}`,
+    result.stats.sourceFormat === "account" ? `Chats included: ${formatNumber(result.stats.chatCount)}` : "",
     `Messages included: ${formatNumber(result.stats.includedMessages)} of ${formatNumber(
       result.stats.totalMessages,
     )}`,
@@ -317,9 +440,10 @@ function prepareMessage(
 
   const date = formatDateTime(message.date, options.dateFormat);
   const author = cleanInline(message.from || message.actor || message.author || "");
+  const sourceChat = cleanInline(message.source_chat || "");
   const bodyText = extractTelegramText(message.text).trim();
   const lines: string[] = [];
-  const heading = buildMessageHeading(message, options, date, author);
+  const heading = buildMessageHeading(message, options, date, author, sourceChat);
 
   if (heading) {
     lines.push(heading);
@@ -381,11 +505,16 @@ function buildMessageHeading(
   options: ConverterOptions,
   date: string,
   author: string,
+  sourceChat: string,
 ): string {
   const headingParts: string[] = [];
 
   if (options.includeDateTime && date) {
     headingParts.push(date);
+  }
+
+  if (sourceChat) {
+    headingParts.push(sourceChat);
   }
 
   if (options.includeAuthor && author) {

@@ -12,6 +12,7 @@ Built for huge Telegram chats, pet-project writeups, research communities, work 
 ## What it does
 
 - Converts Telegram Desktop JSON exports into NotebookLM-ready Markdown files.
+- Supports both Telegram JSON shapes: a single chat export with `messages` in the root and a full account export with `chats.list[].messages`.
 - Splits large chats by word budget: 50k to 500k words per `.md` file.
 - Keeps useful message context: date/time, author, forwards, reactions, polls, and media metadata.
 - Runs in a browser Web Worker, so the UI stays responsive while processing big JSON files.
@@ -29,6 +30,8 @@ NotebookLM supports many file types, including `pdf`, `txt`, `md`, `docx`, `csv`
 3. Choose **Export chat history**.
 4. Select **Machine-readable JSON**.
 5. Export and use the generated `result.json` in TeleLore.
+
+TeleLore also accepts the larger **Export Telegram data** account archive. In that format, Telegram still calls the file `result.json`, but messages are nested inside `chats.list`.
 
 ## Local development
 

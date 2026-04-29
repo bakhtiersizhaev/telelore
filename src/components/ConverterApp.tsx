@@ -274,7 +274,7 @@ export function ConverterApp() {
                 <code className="border border-white/10 bg-black/25 px-1.5 py-0.5 font-mono text-[var(--cyan)]">
                   result.json
                 </code>{" "}
-                из Telegram Desktop: Export chat history, Machine-readable JSON.
+                из Telegram Desktop: экспорт одного чата или полный экспорт аккаунта с чатами.
               </p>
               <p>
                 На выходе ZIP с Markdown файлами. Каждый файл держится в выбранном лимите слов,
@@ -473,7 +473,14 @@ export function ConverterApp() {
                 <Metric label="Чанков" value={formatNumber(result.stats.chunks)} />
                 <Metric label="Слов" value={formatNumber(result.stats.totalWords)} />
                 <Metric label="Сообщений" value={formatNumber(result.stats.includedMessages)} />
-                <Metric label="Авторов" value={formatNumber(result.stats.authors)} />
+                <Metric
+                  label={result.stats.sourceFormat === "account" ? "Чатов" : "Авторов"}
+                  value={formatNumber(
+                    result.stats.sourceFormat === "account"
+                      ? result.stats.chatCount
+                      : result.stats.authors,
+                  )}
+                />
               </div>
 
               {zipUrl ? (
