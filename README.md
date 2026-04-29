@@ -9,6 +9,11 @@ Built for huge Telegram chats, pet-project writeups, research communities, work 
 - Production: https://telelore.vercel.app
 - Repository: https://github.com/bakhtiersizhaev/telelore
 
+## Related NotebookLM Tools
+
+- [TubeLM Link Picker](https://bakhtiersizhaev.github.io/tubelm-link-picker/) is a Chrome extension for selecting YouTube videos and Shorts, copying clean URLs in bulk, and pasting them into NotebookLM.
+- TubeLM repository: [github.com/bakhtiersizhaev/tubelm-link-picker](https://github.com/bakhtiersizhaev/tubelm-link-picker).
+
 ## What it does
 
 - Converts Telegram Desktop JSON exports into NotebookLM-ready Markdown files.
